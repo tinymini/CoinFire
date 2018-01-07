@@ -305,7 +305,7 @@ module.exports = (io) => {
                             even = tickerAdaptor(value, exchange);
                         }
                         if (even) {
-                            obj[even.market + "-" + exchange] = even;
+                            obj[even.market + "/" + exchange] = even;
                         }
                     });
                     // list = _(data).map(function (value) {
@@ -324,7 +324,7 @@ module.exports = (io) => {
                             timestamp: timestamp
                         }, value), exchange);
                         if (even) {
-                            obj[even.market + "-" + exchange] = even;
+                            obj[even.market + "/" + exchange] = even;
                         }
                     });
                     // list = _(data).mapValues(function (value, id) {
@@ -371,11 +371,16 @@ module.exports = (io) => {
                         });
                         var first = _.minBy(arr, "volume");
                         var last = _.maxBy(arr, "volume");
+                        var keyArr = key.split("/");
+
                         var even = {
+                            market: keyArr[0],
+                            exchange: keyArr[1],
                             high: _.maxBy(arr, "high").high,
                             low: _.minBy(arr, "low").low,
                             first: first.first,
                             last: last.last,
+                            priceIncrease : last.last / first.first - 1,
                             volume: last.volume,
                             volumeIncrease: last.volume / first.volume - 1,
                             custom: last.custom
@@ -475,6 +480,9 @@ module.exports = (io) => {
                 obj.base = arr[0];
             } else if (exchange === "binance") {
                 var symbol = data.symbol;
+                if (symbol === "123456") {
+                    return null;
+                }
                 obj.base = data.symbol.substring(symbol.length - 3);
                 if (obj.base === "SDT") {
                     obj.base = data.symbol.substring(symbol.length - 4);

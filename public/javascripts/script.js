@@ -78,11 +78,21 @@ socket.on('data', function (data) {
 
     var str = "";
     _.forEach(data, function (value, key) {
-        _.forEach(value.list, function(_value, _key){
-            console.log(_value, _key);
-        });
+        if (key > 0) {
+            _.forEach(value.list, function (_value, _key) {
+                var srt = _(_value).sortBy(function (__value) {
+                    return __value.volumeIncrease;
+                }).reverse().value();
+                console.log("volume", srt);
+            });
+            _.forEach(value.list, function (_value, _key) {
+                var srt = _(_value).sortBy(function (__value) {
+                    return __value.priceIncrease;
+                }).reverse().value();
+                console.log("price", srt);
+            });
+        }
     });
-    list.innerHTML = str;
 });
 document.addEventListener("DOMContentLoaded", function () {
     var clickBtn = document.getElementById("click");
